@@ -42,18 +42,33 @@ class ZoomableImageViewController: UIViewController, UIScrollViewDelegate {
     }
 
     func setupImageView() {
-        guard let image = UIImage(named: "largeImage") ?? UIImage(systemName: "photo") else { return }
+        guard let image = UIImage(named: "bird") ?? UIImage(systemName: "photo") else { return }
         imageView.image = image
         imageView.contentMode = .scaleAspectFit
 
-        imageView.frame = CGRect(origin: .zero, size: image.size)
-        scrollView.addSubview(imageView)
-        scrollView.contentSize = CGSize(width: scrollView.bounds.width - 40, height: image.size.height)
+        let maxSize = CGSize(
+            width: scrollView.bounds.width - 100,
+            height: scrollView.bounds.height - 50
+        )
 
+        let aspectRatio = image.size.width / image.size.height
+
+        var scaledSize = CGSize(width: maxSize.width, height: maxSize.width / aspectRatio)
+
+        if scaledSize.height > maxSize.height {
+            scaledSize = CGSize(width: maxSize.height * aspectRatio, height: maxSize.height)
+        }
+
+        imageView.frame = CGRect(origin: .zero, size: scaledSize)
+        scrollView.addSubview(imageView)
+
+        scrollView.contentSize = scaledSize
         scrollView.contentInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
 
         centerImage()
     }
+
+
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
